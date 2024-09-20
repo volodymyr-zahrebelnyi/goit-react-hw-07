@@ -4,7 +4,8 @@ import { nanoid } from "nanoid";
 import * as Yup from "yup";
 import css from "./ContactForm.module.css";
 import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsSlice";
+// import { addContact } from "../../redux/contactsSlice";
+import { addContact } from "../../redux/contactsOps";
 
 const ContactFormSchema = Yup.object().shape({
   name: Yup.string()
@@ -25,14 +26,19 @@ export default function ContactForm() {
   const numberFieldId = useId();
 
   const handleSubmit = (values, actions) => {
-    const newContact = {
-      id: nanoid(),
-      name: values.name,
-      number: values.number,
-    };
-    dispatch(addContact(newContact));
+    dispatch(addContact(values));
     actions.resetForm();
   };
+
+  // const handleSubmit = (values, actions) => {
+  //   const newContact = {
+  //     id: nanoid(),
+  //     name: values.name,
+  //     number: values.number,
+  //   };
+  //   dispatch(addContact(newContact));
+  //   actions.resetForm();
+  // };
 
   return (
     <Formik
@@ -59,9 +65,11 @@ export default function ContactForm() {
           </label>
           <Field
             className={css.input}
-            type="text"
+            type="tel"
             name="number"
             id={numberFieldId}
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+            title="Please enter a valid phone number in the format: 123-456-7890"
           ></Field>
           <ErrorMessage name="number" component="span" />
         </div>
